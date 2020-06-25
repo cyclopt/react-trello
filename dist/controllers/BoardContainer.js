@@ -9,8 +9,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
 
 var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutProperties"));
@@ -40,6 +38,10 @@ var _reactPopopo = require("react-popopo");
 var boardActions = _interopRequireWildcard(require("../actions/BoardActions"));
 
 var laneActions = _interopRequireWildcard(require("../actions/LaneActions"));
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 class BoardContainer extends _react.Component {
   constructor(...args) {
@@ -108,6 +110,12 @@ class BoardContainer extends _react.Component {
                 toLaneId: event.toLaneId,
                 cardId: event.cardId,
                 index: event.index
+              });
+
+            case 'UPDATE_CARDS':
+              return actions.updateCards({
+                laneId: event.laneId,
+                cards: event.cards
               });
 
             case 'UPDATE_LANES':
@@ -183,6 +191,7 @@ class BoardContainer extends _react.Component {
           onDataChange = _this$props5.onDataChange,
           onCardAdd = _this$props5.onCardAdd,
           onCardClick = _this$props5.onCardClick,
+          onBeforeCardDelete = _this$props5.onBeforeCardDelete,
           onCardDelete = _this$props5.onCardDelete,
           onLaneScroll = _this$props5.onLaneScroll,
           onLaneClick = _this$props5.onLaneClick,
@@ -194,15 +203,15 @@ class BoardContainer extends _react.Component {
           laneStyle = _this$props5.laneStyle,
           onCardMoveAcrossLanes = _this$props5.onCardMoveAcrossLanes,
           t = _this$props5.t,
-          otherProps = (0, _objectWithoutProperties2.default)(_this$props5, ["id", "components", "reducerData", "draggable", "laneDraggable", "laneDragClass", "laneDropClass", "style", "onDataChange", "onCardAdd", "onCardClick", "onCardDelete", "onLaneScroll", "onLaneClick", "onLaneAdd", "onLaneDelete", "onLaneUpdate", "editable", "canAddLanes", "laneStyle", "onCardMoveAcrossLanes", "t"]);
+          otherProps = (0, _objectWithoutProperties2.default)(_this$props5, ["id", "components", "reducerData", "draggable", "laneDraggable", "laneDragClass", "laneDropClass", "style", "onDataChange", "onCardAdd", "onCardClick", "onBeforeCardDelete", "onCardDelete", "onLaneScroll", "onLaneClick", "onLaneAdd", "onLaneDelete", "onLaneUpdate", "editable", "canAddLanes", "laneStyle", "onCardMoveAcrossLanes", "t"]);
     const addLaneMode = this.state.addLaneMode; // Stick to whitelisting attributes to segregate board and lane props
 
-    const passthroughProps = (0, _pick.default)(this.props, ['onCardMoveAcrossLanes', 'onLaneScroll', 'onLaneDelete', 'onLaneUpdate', 'onCardClick', 'onCardDelete', 'onCardAdd', 'onLaneClick', 'laneSortFunction', 'draggable', 'laneDraggable', 'cardDraggable', 'collapsibleLanes', 'canAddLanes', 'hideCardDeleteIcon', 'tagStyle', 'handleDragStart', 'handleDragEnd', 'cardDragClass', 'editLaneTitle', 't']);
-    return _react.default.createElement(components.BoardWrapper, (0, _extends2.default)({
+    const passthroughProps = (0, _pick.default)(this.props, ['onCardMoveAcrossLanes', 'onLaneScroll', 'onLaneDelete', 'onLaneUpdate', 'onCardClick', 'onBeforeCardDelete', 'onCardDelete', 'onCardAdd', 'onLaneClick', 'laneSortFunction', 'draggable', 'laneDraggable', 'cardDraggable', 'collapsibleLanes', 'canAddLanes', 'hideCardDeleteIcon', 'tagStyle', 'handleDragStart', 'handleDragEnd', 'cardDragClass', 'editLaneTitle', 't']);
+    return /*#__PURE__*/_react.default.createElement(components.BoardWrapper, (0, _extends2.default)({
       style: style
     }, otherProps, {
       draggable: false
-    }), _react.default.createElement(_reactPopopo.PopoverWrapper, null, _react.default.createElement(_Container.default, {
+    }), /*#__PURE__*/_react.default.createElement(_reactPopopo.PopoverWrapper, null, /*#__PURE__*/_react.default.createElement(_Container.default, {
       orientation: "horizontal",
       onDragStart: this.onDragStart,
       dragClass: laneDragClass,
@@ -216,7 +225,7 @@ class BoardContainer extends _react.Component {
             droppable = lane.droppable,
             otherProps = (0, _objectWithoutProperties2.default)(lane, ["id", "droppable"]);
 
-      const laneToRender = _react.default.createElement(_Lane.default, (0, _extends2.default)({
+      const laneToRender = /*#__PURE__*/_react.default.createElement(_Lane.default, (0, _extends2.default)({
         key: id,
         boardId: this.groupName,
         components: components,
@@ -230,15 +239,15 @@ class BoardContainer extends _react.Component {
         editable: editable && !lane.disallowAddingCard
       }, otherProps, passthroughProps));
 
-      return draggable && laneDraggable ? _react.default.createElement(_Draggable.default, {
+      return draggable && laneDraggable ? /*#__PURE__*/_react.default.createElement(_Draggable.default, {
         key: lane.id
       }, laneToRender) : laneToRender;
-    }))), canAddLanes && _react.default.createElement(_Container.default, {
+    }))), canAddLanes && /*#__PURE__*/_react.default.createElement(_Container.default, {
       orientation: "horizontal"
-    }, editable && !addLaneMode ? _react.default.createElement(components.NewLaneSection, {
+    }, editable && !addLaneMode ? /*#__PURE__*/_react.default.createElement(components.NewLaneSection, {
       t: t,
       onClick: this.showEditableLane
-    }) : addLaneMode && _react.default.createElement(components.NewLaneForm, {
+    }) : addLaneMode && /*#__PURE__*/_react.default.createElement(components.NewLaneForm, {
       onCancel: this.hideEditableLane,
       onAdd: this.addNewLane,
       t: t
@@ -257,6 +266,7 @@ BoardContainer.propTypes = {
   eventBusHandle: _propTypes.default.func,
   onLaneScroll: _propTypes.default.func,
   onCardClick: _propTypes.default.func,
+  onBeforeCardDelete: _propTypes.default.func,
   onCardDelete: _propTypes.default.func,
   onCardAdd: _propTypes.default.func,
   onLaneAdd: _propTypes.default.func,
@@ -313,7 +323,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  actions: (0, _redux.bindActionCreators)((0, _objectSpread2.default)({}, boardActions, laneActions), dispatch)
+  actions: (0, _redux.bindActionCreators)(_objectSpread(_objectSpread({}, boardActions), laneActions), dispatch)
 });
 
 var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(BoardContainer);

@@ -16,8 +16,8 @@ var _Elements = require("../../styles/Elements");
 var _default = ({
   onClick,
   collapsed
-}) => _react.default.createElement(_Base.LaneFooter, {
+}) => /*#__PURE__*/_react.default.createElement(_Base.LaneFooter, {
   onClick: onClick
-}, collapsed ? _react.default.createElement(_Elements.ExpandBtn, null) : _react.default.createElement(_Elements.CollapseBtn, null));
+}, collapsed ? /*#__PURE__*/_react.default.createElement(_Elements.ExpandBtn, null) : /*#__PURE__*/_react.default.createElement(_Elements.CollapseBtn, null));
 
 exports.default = _default;

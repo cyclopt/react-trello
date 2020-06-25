@@ -45,9 +45,9 @@ class NewLane extends _react.Component {
     const _this$props = this.props,
           onCancel = _this$props.onCancel,
           t = _this$props.t;
-    return _react.default.createElement(_reactClickOutside.default, {
+    return /*#__PURE__*/_react.default.createElement(_reactClickOutside.default, {
       onClickOutside: this.onClickOutside
-    }, _react.default.createElement(_Base.Section, null, _react.default.createElement(_Base.LaneTitle, null, _react.default.createElement(_NewLaneTitleEditor.default, {
+    }, /*#__PURE__*/_react.default.createElement(_Base.Section, null, /*#__PURE__*/_react.default.createElement(_Base.LaneTitle, null, /*#__PURE__*/_react.default.createElement(_NewLaneTitleEditor.default, {
       ref: _ref => this.refInput = _ref,
       placeholder: t('placeholder.title'),
       onCancel: this.props.onCancel,
@@ -55,9 +55,9 @@ class NewLane extends _react.Component {
       resize: "vertical",
       border: true,
       autoFocus: true
-    })), _react.default.createElement(_Base.NewLaneButtons, null, _react.default.createElement(_Elements.AddButton, {
+    })), /*#__PURE__*/_react.default.createElement(_Base.NewLaneButtons, null, /*#__PURE__*/_react.default.createElement(_Elements.AddButton, {
       onClick: this.handleSubmit
-    }, t('button.Add lane')), _react.default.createElement(_Elements.CancelButton, {
+    }, t('button.Add lane')), /*#__PURE__*/_react.default.createElement(_Elements.CancelButton, {
       onClick: onCancel
     }, t('button.Cancel')))));
   }

@@ -34,6 +34,9 @@ const boardReducer = (state = {
     case 'UPDATE_LANES':
       return _LaneHelper.default.updateLanes(state, payload);
 
+    case 'UPDATE_LANE':
+      return _LaneHelper.default.updateLane(state, payload);
+
     case 'PAGINATE_LANE':
       return _LaneHelper.default.paginateLane(state, payload);
 

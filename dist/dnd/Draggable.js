@@ -15,9 +15,9 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _smoothDnd = require("smooth-dnd");
+var _trelloSmoothDnd = require("trello-smooth-dnd");
 
-const wrapperClass = _smoothDnd.constants.wrapperClass;
+const wrapperClass = _trelloSmoothDnd.constants.wrapperClass;
 
 class Draggable extends _react.Component {
   render() {
@@ -28,7 +28,7 @@ class Draggable extends _react.Component {
     }
 
     const clsName = "".concat(this.props.className ? this.props.className + ' ' : '');
-    return _react.default.createElement("div", (0, _extends2.default)({}, this.props, {
+    return /*#__PURE__*/_react.default.createElement("div", (0, _extends2.default)({}, this.props, {
       className: "".concat(clsName).concat(wrapperClass)
     }), this.props.children);
   }
