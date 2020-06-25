@@ -24,9 +24,9 @@ class Lane extends Component {
 
   handleScroll = evt => {
     const node = evt.target
-    const elemScrollPosition = node.scrollHeight - node.scrollTop - node.clientHeight
+    const elemScrolPosition = node.scrollHeight - node.scrollTop - node.clientHeight
     const {onLaneScroll} = this.props
-    if (elemScrollPosition <= 0 && onLaneScroll && !this.state.loading) {
+    if (elemScrolPosition <= 0 && onLaneScroll && !this.state.loading) {
       const {currentPage} = this.state
       this.setState({loading: true})
       const nextPage = currentPage + 1
@@ -69,15 +69,8 @@ class Lane extends Component {
   }
 
   removeCard = cardId => {
-    if (this.props.onBeforeCardDelete && typeof this.props.onBeforeCardDelete === 'function') {
-      this.props.onBeforeCardDelete(() => {
-        this.props.onCardDelete && this.props.onCardDelete(cardId, this.props.id)
-        this.props.actions.removeCard({laneId: this.props.id, cardId: cardId})
-      })
-    } else {
-      this.props.onCardDelete && this.props.onCardDelete(cardId, this.props.id)
-      this.props.actions.removeCard({laneId: this.props.id, cardId: cardId})
-    }
+    this.props.onCardDelete && this.props.onCardDelete(cardId, this.props.id)
+    this.props.actions.removeCard({laneId: this.props.id, cardId: cardId})
   }
 
   handleCardClick = (e, card) => {
@@ -120,11 +113,7 @@ class Lane extends Component {
   onDragEnd = (laneId, result, laneSortFunction) => {
     const {handleDragEnd} = this.props
     const {addedIndex, payload} = result
-
-    if (this.state.isDraggingOver) {
-      this.setState({isDraggingOver: false})
-    }
-
+    if (this.state.isDraggingOver) this.setState({isDraggingOver: false})
     if (addedIndex != null) {
       const newCard = {...cloneDeep(payload), laneId}
       const response = handleDragEnd ? handleDragEnd(payload.id, payload.laneId, laneId, addedIndex, newCard) : true
@@ -245,7 +234,6 @@ class Lane extends Component {
       onLaneScroll,
       onCardClick,
       onCardAdd,
-      onBeforeCardDelete,
       onCardDelete,
       onLaneDelete,
       onLaneUpdate,
@@ -290,7 +278,6 @@ Lane.propTypes = {
   droppable: PropTypes.bool,
   onCardMoveAcrossLanes: PropTypes.func,
   onCardClick: PropTypes.func,
-  onBeforeCardDelete: PropTypes.func,
   onCardDelete: PropTypes.func,
   onCardAdd: PropTypes.func,
   onLaneDelete: PropTypes.func,

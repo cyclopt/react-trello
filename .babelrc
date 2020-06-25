@@ -8,7 +8,7 @@
         }
       }
     ],
-    "@babel/preset-react"
+    "@babel/react"
   ],
   "plugins": [
     "@babel/plugin-transform-template-literals",

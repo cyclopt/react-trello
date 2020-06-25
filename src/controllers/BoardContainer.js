@@ -79,8 +79,6 @@ class BoardContainer extends Component {
               cardId: event.cardId,
               index: event.index
             })
-          case 'UPDATE_CARDS':
-            return actions.updateCards({laneId: event.laneId, cards: event.cards})
           case 'UPDATE_LANES':
             return actions.updateLanes(event.lanes)
           case 'UPDATE_LANE':
@@ -124,7 +122,6 @@ class BoardContainer extends Component {
       onDataChange,
       onCardAdd,
       onCardClick,
-      onBeforeCardDelete,
       onCardDelete,
       onLaneScroll,
       onLaneClick,
@@ -147,7 +144,6 @@ class BoardContainer extends Component {
       'onLaneDelete',
       'onLaneUpdate',
       'onCardClick',
-      'onBeforeCardDelete',
       'onCardDelete',
       'onCardAdd',
       'onLaneClick',
@@ -225,7 +221,6 @@ BoardContainer.propTypes = {
   eventBusHandle: PropTypes.func,
   onLaneScroll: PropTypes.func,
   onCardClick: PropTypes.func,
-  onBeforeCardDelete: PropTypes.func,
   onCardDelete: PropTypes.func,
   onCardAdd: PropTypes.func,
   onLaneAdd: PropTypes.func,
