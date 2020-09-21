@@ -95,6 +95,12 @@ class BoardContainer extends _react.Component {
                 card: event.card
               });
 
+            case 'UPDATE_CARD':
+              return actions.updateCard({
+                laneId: event.laneId,
+                card: event.card
+              });
+
             case 'REMOVE_CARD':
               return actions.removeCard({
                 laneId: event.laneId,
