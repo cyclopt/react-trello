@@ -162,7 +162,7 @@ class BoardContainer extends _react.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // nextProps.data changes when external Board input props change and nextProps.reducerData changes due to event bus or UI changes
     const _this$props4 = this.props,
           data = _this$props4.data,

@@ -281,7 +281,7 @@ class Lane extends _react.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!(0, _isEqual.default)(this.props.cards, nextProps.cards)) {
       this.setState({
         currentPage: nextProps.currentPage
