@@ -1,7 +1,5 @@
 "use strict";
 
-var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
-
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -39,7 +37,11 @@ var boardActions = _interopRequireWildcard(require("../actions/BoardActions"));
 
 var laneActions = _interopRequireWildcard(require("../actions/LaneActions"));
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -124,6 +126,12 @@ class BoardContainer extends _react.Component {
                 cards: event.cards
               });
 
+            case 'UPDATE_CARD':
+              return actions.updateCard({
+                laneId: event.laneId,
+                updatedCard: event.card
+              });
+
             case 'UPDATE_LANES':
               return actions.updateLanes(event.lanes);
 
@@ -196,6 +204,7 @@ class BoardContainer extends _react.Component {
           style = _this$props5.style,
           onDataChange = _this$props5.onDataChange,
           onCardAdd = _this$props5.onCardAdd,
+          onCardUpdate = _this$props5.onCardUpdate,
           onCardClick = _this$props5.onCardClick,
           onBeforeCardDelete = _this$props5.onBeforeCardDelete,
           onCardDelete = _this$props5.onCardDelete,
@@ -209,10 +218,10 @@ class BoardContainer extends _react.Component {
           laneStyle = _this$props5.laneStyle,
           onCardMoveAcrossLanes = _this$props5.onCardMoveAcrossLanes,
           t = _this$props5.t,
-          otherProps = (0, _objectWithoutProperties2.default)(_this$props5, ["id", "components", "reducerData", "draggable", "laneDraggable", "laneDragClass", "laneDropClass", "style", "onDataChange", "onCardAdd", "onCardClick", "onBeforeCardDelete", "onCardDelete", "onLaneScroll", "onLaneClick", "onLaneAdd", "onLaneDelete", "onLaneUpdate", "editable", "canAddLanes", "laneStyle", "onCardMoveAcrossLanes", "t"]);
+          otherProps = (0, _objectWithoutProperties2.default)(_this$props5, ["id", "components", "reducerData", "draggable", "laneDraggable", "laneDragClass", "laneDropClass", "style", "onDataChange", "onCardAdd", "onCardUpdate", "onCardClick", "onBeforeCardDelete", "onCardDelete", "onLaneScroll", "onLaneClick", "onLaneAdd", "onLaneDelete", "onLaneUpdate", "editable", "canAddLanes", "laneStyle", "onCardMoveAcrossLanes", "t"]);
     const addLaneMode = this.state.addLaneMode; // Stick to whitelisting attributes to segregate board and lane props
 
-    const passthroughProps = (0, _pick.default)(this.props, ['onCardMoveAcrossLanes', 'onLaneScroll', 'onLaneDelete', 'onLaneUpdate', 'onCardClick', 'onBeforeCardDelete', 'onCardDelete', 'onCardAdd', 'onLaneClick', 'laneSortFunction', 'draggable', 'laneDraggable', 'cardDraggable', 'collapsibleLanes', 'canAddLanes', 'hideCardDeleteIcon', 'tagStyle', 'handleDragStart', 'handleDragEnd', 'cardDragClass', 'editLaneTitle', 't']);
+    const passthroughProps = (0, _pick.default)(this.props, ['onCardMoveAcrossLanes', 'onLaneScroll', 'onLaneDelete', 'onLaneUpdate', 'onCardClick', 'onBeforeCardDelete', 'onCardDelete', 'onCardAdd', 'onCardUpdate', 'onLaneClick', 'laneSortFunction', 'draggable', 'laneDraggable', 'cardDraggable', 'collapsibleLanes', 'canAddLanes', 'hideCardDeleteIcon', 'tagStyle', 'handleDragStart', 'handleDragEnd', 'cardDragClass', 'editLaneTitle', 't']);
     return /*#__PURE__*/_react.default.createElement(components.BoardWrapper, (0, _extends2.default)({
       style: style
     }, otherProps, {
@@ -275,6 +284,7 @@ BoardContainer.propTypes = {
   onBeforeCardDelete: _propTypes.default.func,
   onCardDelete: _propTypes.default.func,
   onCardAdd: _propTypes.default.func,
+  onCardUpdate: _propTypes.default.func,
   onLaneAdd: _propTypes.default.func,
   onLaneDelete: _propTypes.default.func,
   onLaneClick: _propTypes.default.func,
@@ -306,6 +316,7 @@ BoardContainer.defaultProps = {
   handleDragEnd: () => {},
   handleLaneDragStart: () => {},
   handleLaneDragEnd: () => {},
+  onCardUpdate: () => {},
   onLaneAdd: () => {},
   onLaneDelete: () => {},
   onCardMoveAcrossLanes: () => {},

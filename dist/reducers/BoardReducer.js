@@ -22,9 +22,6 @@ const boardReducer = (state = {
     case 'ADD_CARD':
       return _LaneHelper.default.appendCardToLane(state, payload);
 
-    case 'UPDATE_CARD':
-      return _LaneHelper.default.updateCardFromLane(state, payload);
-
     case 'REMOVE_CARD':
       return _LaneHelper.default.removeCardFromLane(state, payload);
 
@@ -33,6 +30,9 @@ const boardReducer = (state = {
 
     case 'UPDATE_CARDS':
       return _LaneHelper.default.updateCardsForLane(state, payload);
+
+    case 'UPDATE_CARD':
+      return _LaneHelper.default.updateCardForLane(state, payload);
 
     case 'UPDATE_LANES':
       return _LaneHelper.default.updateLanes(state, payload);

@@ -1,7 +1,5 @@
 "use strict";
 
-var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
-
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -39,7 +37,11 @@ var _Draggable = _interopRequireDefault(require("../dnd/Draggable"));
 
 var laneActions = _interopRequireWildcard(require("../actions/LaneActions"));
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -56,19 +58,16 @@ class Lane extends _react.Component {
     (0, _defineProperty2.default)(this, "handleScroll", evt => {
       const node = evt.target;
       const elemScrollPosition = node.scrollHeight - node.scrollTop - node.clientHeight;
-      const onLaneScroll = this.props.onLaneScroll;
+      const onLaneScroll = this.props.onLaneScroll; // In some browsers and/or screen sizes a decimal rest value between 0 and 1 exists, so it should be checked on < 1 instead of < 0
 
-      if (elemScrollPosition <= 0 && onLaneScroll && !this.state.loading) {
+      if (elemScrollPosition < 1 && onLaneScroll && !this.state.loading) {
         const currentPage = this.state.currentPage;
         this.setState({
           loading: true
         });
         const nextPage = currentPage + 1;
         onLaneScroll(nextPage, this.props.id).then(moreCards => {
-          if (!moreCards || moreCards.length === 0) {
-            // if no cards present, stop retrying until user action
-            node.scrollTop = node.scrollTop - 100;
-          } else {
+          if ((moreCards || []).length > 0) {
             this.props.actions.paginateLane({
               laneId: this.props.id,
               newCards: moreCards,
@@ -175,6 +174,13 @@ class Lane extends _react.Component {
         return response;
       }
     });
+    (0, _defineProperty2.default)(this, "updateCard", updatedCard => {
+      this.props.actions.updateCard({
+        laneId: this.props.id,
+        card: updatedCard
+      });
+      this.props.onCardUpdate(this.props.id, updatedCard);
+    });
     (0, _defineProperty2.default)(this, "renderDragContainer", isDraggingOver => {
       const _this$props = this.props,
             id = _this$props.id,
@@ -203,9 +209,12 @@ class Lane extends _react.Component {
           className: "react-trello-card",
           onDelete: onDeleteCard,
           onClick: e => this.handleCardClick(e, card),
+          onChange: updatedCard => this.updateCard(updatedCard),
           showDeleteButton: !hideCardDeleteIcon,
           tagStyle: tagStyle,
-          cardDraggable: cardDraggable
+          cardDraggable: cardDraggable,
+          editable: editable,
+          t: t
         }, card));
 
         return cardDraggable && (!card.hasOwnProperty('draggable') || card.draggable) ? /*#__PURE__*/_react.default.createElement(_Draggable.default, {
@@ -234,7 +243,8 @@ class Lane extends _react.Component {
         getChildPayload: index => this.props.getCardDetails(id, index)
       }, cardList), editable && !addCardMode && /*#__PURE__*/_react.default.createElement(components.AddCardLink, {
         onClick: this.showEditableCard,
-        t: t
+        t: t,
+        laneId: id
       }), addCardMode && /*#__PURE__*/_react.default.createElement(components.NewCardForm, {
         onCancel: this.hideEditableCard,
         t: t,
@@ -312,8 +322,9 @@ class Lane extends _react.Component {
           onCardDelete = _this$props2.onCardDelete,
           onLaneDelete = _this$props2.onLaneDelete,
           onLaneUpdate = _this$props2.onLaneUpdate,
+          onCardUpdate = _this$props2.onCardUpdate,
           onCardMoveAcrossLanes = _this$props2.onCardMoveAcrossLanes,
-          otherProps = (0, _objectWithoutProperties2.default)(_this$props2, ["id", "cards", "collapsibleLanes", "components", "onLaneClick", "onLaneScroll", "onCardClick", "onCardAdd", "onBeforeCardDelete", "onCardDelete", "onLaneDelete", "onLaneUpdate", "onCardMoveAcrossLanes"]);
+          otherProps = (0, _objectWithoutProperties2.default)(_this$props2, ["id", "cards", "collapsibleLanes", "components", "onLaneClick", "onLaneScroll", "onCardClick", "onCardAdd", "onBeforeCardDelete", "onCardDelete", "onLaneDelete", "onLaneUpdate", "onCardUpdate", "onCardMoveAcrossLanes"]);
     const allClassNames = (0, _classnames.default)('react-trello-lane', this.props.className || '');
     const showFooter = collapsibleLanes && cards.length > 0;
     return /*#__PURE__*/_react.default.createElement(components.Section, (0, _extends2.default)({}, otherProps, {
@@ -355,6 +366,7 @@ Lane.propTypes = {
   onBeforeCardDelete: _propTypes.default.func,
   onCardDelete: _propTypes.default.func,
   onCardAdd: _propTypes.default.func,
+  onCardUpdate: _propTypes.default.func,
   onLaneDelete: _propTypes.default.func,
   onLaneUpdate: _propTypes.default.func,
   onLaneClick: _propTypes.default.func,
@@ -374,7 +386,8 @@ Lane.defaultProps = {
   label: undefined,
   editable: false,
   onLaneUpdate: () => {},
-  onCardAdd: () => {}
+  onCardAdd: () => {},
+  onCardUpdate: () => {}
 };
 
 const mapDispatchToProps = dispatch => ({
