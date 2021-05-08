@@ -1,5 +1,4 @@
 import update from 'immutability-helper'
-import uuidv1 from 'uuid/v1'
 
 const LaneHelper = {
   initialiseLanes: (state, {lanes}) => {
@@ -49,7 +48,7 @@ const LaneHelper = {
   },
 
   addLane: (state, lane) => {
-    const newLane = {id: uuidv1(), cards: [], ...lane}
+    const newLane = {cards: [], ...lane}
     return update(state, {lanes: {$push: [newLane]}})
   },
 
@@ -76,28 +75,6 @@ const LaneHelper = {
     return update(state, {lanes: {$set: lanes}})
   },
 
-  updateCardFromLane: (state, {laneId, card}) => {
-    const laneIndex = state.lanes.findIndex(x => x.id === laneId)
-    if (laneIndex < 0) {
-      return state
-    }
-    const cardIndex = state.lanes[laneIndex].cards.findIndex(x => x.id === card.id)
-    if (cardIndex < 0) {
-      return state
-    }
-    return update(state, {
-      lanes: {
-        [laneIndex]: {
-          cards: {
-            [cardIndex]: {
-              $set: card
-            }
-          }
-        }
-      }
-    })
-  },
-
   moveCardAcrossLanes: (state, {fromLaneId, toLaneId, cardId, index, laneSortFunction}) => {
     let cardToMove = null
     const interimLanes = state.lanes.map(lane => {
@@ -120,6 +97,24 @@ const LaneHelper = {
   updateCardsForLane: (state, {laneId, cards}) => {
     const lanes = state.lanes.map(lane => {
       if (lane.id === laneId) {
+        return update(lane, {cards: {$set: cards}})
+      } else {
+        return lane
+      }
+    })
+    return update(state, {lanes: {$set: lanes}})
+  },
+
+  updateCardForLane: (state, {laneId, card: updatedCard}) => {
+    const lanes = state.lanes.map(lane => {
+      if (lane.id === laneId) {
+        const cards = lane.cards.map(card => {
+          if (card.id === updatedCard.id) {
+            return {...card, ...updatedCard}
+          } else {
+            return card
+          }
+        })
         return update(lane, {cards: {$set: cards}})
       } else {
         return lane

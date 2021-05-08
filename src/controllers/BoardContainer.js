@@ -83,6 +83,8 @@ class BoardContainer extends Component {
             })
           case 'UPDATE_CARDS':
             return actions.updateCards({laneId: event.laneId, cards: event.cards})
+          case 'UPDATE_CARD':
+            return actions.updateCard({laneId: event.laneId, updatedCard: event.card})
           case 'UPDATE_LANES':
             return actions.updateLanes(event.lanes)
           case 'UPDATE_LANE':
@@ -125,6 +127,7 @@ class BoardContainer extends Component {
       style,
       onDataChange,
       onCardAdd,
+      onCardUpdate,
       onCardClick,
       onBeforeCardDelete,
       onCardDelete,
@@ -152,6 +155,7 @@ class BoardContainer extends Component {
       'onBeforeCardDelete',
       'onCardDelete',
       'onCardAdd',
+      'onCardUpdate',
       'onLaneClick',
       'laneSortFunction',
       'draggable',
@@ -230,6 +234,7 @@ BoardContainer.propTypes = {
   onBeforeCardDelete: PropTypes.func,
   onCardDelete: PropTypes.func,
   onCardAdd: PropTypes.func,
+  onCardUpdate: PropTypes.func,
   onLaneAdd: PropTypes.func,
   onLaneDelete: PropTypes.func,
   onLaneClick: PropTypes.func,
@@ -262,6 +267,7 @@ BoardContainer.defaultProps = {
   handleDragEnd: () => {},
   handleLaneDragStart: () => {},
   handleLaneDragEnd: () => {},
+  onCardUpdate: () => {},
   onLaneAdd: () => {},
   onLaneDelete: () => {},
   onCardMoveAcrossLanes: () => {},

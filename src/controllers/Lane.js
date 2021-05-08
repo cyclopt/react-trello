@@ -26,15 +26,13 @@ class Lane extends Component {
     const node = evt.target
     const elemScrollPosition = node.scrollHeight - node.scrollTop - node.clientHeight
     const {onLaneScroll} = this.props
-    if (elemScrollPosition <= 0 && onLaneScroll && !this.state.loading) {
+    // In some browsers and/or screen sizes a decimal rest value between 0 and 1 exists, so it should be checked on < 1 instead of < 0
+    if (elemScrollPosition < 1 && onLaneScroll && !this.state.loading) {
       const {currentPage} = this.state
       this.setState({loading: true})
       const nextPage = currentPage + 1
       onLaneScroll(nextPage, this.props.id).then(moreCards => {
-        if (!moreCards || moreCards.length === 0) {
-          // if no cards present, stop retrying until user action
-          node.scrollTop = node.scrollTop - 100
-        } else {
+        if ((moreCards || []).length > 0) {
           this.props.actions.paginateLane({
             laneId: this.props.id,
             newCards: moreCards,
@@ -49,7 +47,7 @@ class Lane extends Component {
   sortCards(cards, sortFunction) {
     if (!cards) return []
     if (!sortFunction) return cards
-    return cards.concat().sort(function(card1, card2) {
+    return cards.concat().sort(function (card1, card2) {
       return sortFunction(card1, card2)
     })
   }
@@ -142,6 +140,11 @@ class Lane extends Component {
     }
   }
 
+  updateCard = updatedCard => {
+    this.props.actions.updateCard({laneId: this.props.id, card: updatedCard})
+    this.props.onCardUpdate(this.props.id, updatedCard)
+  }
+
   renderDragContainer = isDraggingOver => {
     const {
       id,
@@ -171,9 +174,12 @@ class Lane extends Component {
           className="react-trello-card"
           onDelete={onDeleteCard}
           onClick={e => this.handleCardClick(e, card)}
+          onChange={updatedCard => this.updateCard(updatedCard)}
           showDeleteButton={!hideCardDeleteIcon}
           tagStyle={tagStyle}
           cardDraggable={cardDraggable}
+          editable={editable}
+          t={t}
           {...card}
         />
       )
@@ -199,7 +205,7 @@ class Lane extends Component {
           getChildPayload={index => this.props.getCardDetails(id, index)}>
           {cardList}
         </Container>
-        {editable && !addCardMode && <components.AddCardLink onClick={this.showEditableCard} t={t} />}
+        {editable && !addCardMode && <components.AddCardLink onClick={this.showEditableCard} t={t} laneId={id} />}
         {addCardMode && (
           <components.NewCardForm onCancel={this.hideEditableCard} t={t} laneId={id} onAdd={this.addNewCard} />
         )}
@@ -249,6 +255,7 @@ class Lane extends Component {
       onCardDelete,
       onLaneDelete,
       onLaneUpdate,
+      onCardUpdate,
       onCardMoveAcrossLanes,
       ...otherProps
     } = this.props
@@ -293,6 +300,7 @@ Lane.propTypes = {
   onBeforeCardDelete: PropTypes.func,
   onCardDelete: PropTypes.func,
   onCardAdd: PropTypes.func,
+  onCardUpdate: PropTypes.func,
   onLaneDelete: PropTypes.func,
   onLaneUpdate: PropTypes.func,
   onLaneClick: PropTypes.func,
@@ -313,14 +321,12 @@ Lane.defaultProps = {
   label: undefined,
   editable: false,
   onLaneUpdate: () => {},
-  onCardAdd: () => {}
+  onCardAdd: () => {},
+  onCardUpdate: () => {}
 }
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(laneActions, dispatch)
 })
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Lane)
+export default connect(null, mapDispatchToProps)(Lane)
